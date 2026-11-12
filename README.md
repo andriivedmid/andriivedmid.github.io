@@ -1,2 +1,2 @@
 # andriivedmid.github.io
-Showcase of all my projects
+A showcase of all my projects
