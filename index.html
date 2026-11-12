@@ -268,6 +268,16 @@
 
   .btn:hover { transform: translateY(-2px); }
 
+  .btn .icon {
+    width: 15px;
+    height: 15px;
+    flex: none;
+  }
+
+  .copy-email.is-copied {
+    background: linear-gradient(100deg, #86efac, #67e8f9);
+  }
+
   .btn-primary {
     color: #0a0a0f;
     background: linear-gradient(100deg, #c4b5fd, #a5f3fc);
@@ -1147,7 +1157,14 @@
         <p class="mono" style="margin: 0;">03 &mdash; Contact</p>
         <h2>My pages online.</h2>
         <div class="contact-actions">
-          <a class="btn btn-primary" href="https://github.com/andriivedmid" target="_blank" rel="noopener noreferrer">
+          <button class="btn btn-primary copy-email" type="button" data-email="andrii.y.vedmid@gmail.com" aria-label="Copy email address andrii.y.vedmid@gmail.com" title="andrii.y.vedmid@gmail.com">
+            <span>Copy email</span>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+          <a class="btn btn-ghost" href="assets/resume.pdf" target="_blank" rel="noopener noreferrer">
+            Resume <span aria-hidden="true">↗</span>
+          </a>
+          <a class="btn btn-ghost" href="https://github.com/andriivedmid" target="_blank" rel="noopener noreferrer">
             GitHub <span aria-hidden="true">↗</span>
           </a>
           <a class="btn btn-ghost" href="https://www.linkedin.com/in/andriivedmid/" target="_blank" rel="noopener noreferrer">
@@ -1212,6 +1229,48 @@
         card.style.setProperty("--my", (e.clientY - rect.top) + "px");
       });
     });
+
+    /* Copy email */
+    var copyBtn = document.querySelector(".copy-email");
+    if (copyBtn) {
+      var copyLabel = copyBtn.querySelector("span");
+      var copyDefault = copyLabel.textContent;
+      var copyTimer = null;
+
+      function markCopied() {
+        copyLabel.textContent = "Copied!";
+        copyBtn.classList.add("is-copied");
+        clearTimeout(copyTimer);
+        copyTimer = setTimeout(function () {
+          copyLabel.textContent = copyDefault;
+          copyBtn.classList.remove("is-copied");
+        }, 1800);
+      }
+
+      function fallbackCopy(text) {
+        var area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.select();
+        try { document.execCommand("copy"); } catch (e) {}
+        document.body.removeChild(area);
+        markCopied();
+      }
+
+      copyBtn.addEventListener("click", function () {
+        var email = copyBtn.dataset.email;
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(email).then(markCopied, function () {
+            fallbackCopy(email);
+          });
+        } else {
+          fallbackCopy(email);
+        }
+      });
+    }
 
     /* App filters */
     var filters = document.querySelectorAll(".filter");
